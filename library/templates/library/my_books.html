@@ -1,0 +1,33 @@
+{% extends 'library/base.html' %}
+
+{% block content %}
+<h2>My Issued Books</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>Issued Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for issue in issues %}
+        <tr>
+            <td>{{ issue.book }}</td>
+            <td>{{ issue.issue_date }}</td>
+            <td>
+                <a href="{% url 'library:return_book' issue.id %}"
+                   class="btn btn-sm btn-danger">
+                   Return
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No books issued</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

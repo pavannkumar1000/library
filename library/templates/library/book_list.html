@@ -1,0 +1,36 @@
+{% extends 'library/base.html' %}
+
+{% block content %}
+<h2>Available Books</h2>
+
+<!-- Search Form -->
+<form method="get" class="mb-3 d-flex">
+    <input type="text" name="q" value="{{ query }}" class="form-control me-2" placeholder="Search by title, author, category">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Available</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in books %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.category }}</td>
+            <td>{{ book.available_copies }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No books found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
