@@ -1,7 +1,5 @@
 from django import forms
 from .models import BookIssue
-from django.conf import settings
-
 
 class BookIssueForm(forms.ModelForm):
     class Meta:
@@ -9,28 +7,16 @@ class BookIssueForm(forms.ModelForm):
         fields = ['book']
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)  # Get current user
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-    def clean(self):
-        cleaned_data = super().clean()
+    def clean_book(self):
+        book = self.cleaned_data.get('book')
 
-        # Max 2 books per user
-        if self.user:
-            issued_count = BookIssue.objects.filter(
-                user=self.user,
-                is_returned=False
-            ).count()
-            if issued_count >= 2:
-                raise forms.ValidationError(
-                    "You can issue only 2 books at a time."
-                )
-
-        # Check book availability
-        book = cleaned_data.get('book')
-        if book and book.available_copies <= 0:
+        # 🔒 Minimum 1 copy must remain in library
+        if book.available_copies <= 1:
             raise forms.ValidationError(
-                "This book is currently unavailable."
+                "This book cannot be issued. At least 1 copy must remain in the library."
             )
 
-        return cleaned_data
+        return book
